@@ -7,6 +7,7 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 import pylab
+# pyplot和pylab都都是matplotlib下的模块
 
 
 # 绘制标准y = sin(x)曲线
@@ -16,9 +17,12 @@ def draw_correct_line():
     x = x.reshape(len(x), 1)
     y = np.sin(x)
 
-    pylab.plot(x, y, label="标准sin曲线")
+    # pylab.plot(x, y, label="Standard y=sin(x) graph")
+    plt.plot(x, y, label="Standard y=sin(x) graph")
     # 坐标轴为红色
     plt.axhline(linewidth=1, color='r')
+    # 加上下面这句才会显示label（中文无法显示）
+    plt.legend()
 
 
 def get_train_data():
@@ -103,7 +107,6 @@ def train():
             if i % 10000 == 0:
                 # times表示“第times万次”
                 times = int(i / 10000)
-                print("第", times, "万次")
                 test_x_ndarray = np.arange(0, 2 * np.pi, 0.01)
                 test_y_ndarray = np.zeros([len(test_x_ndarray)])
                 ind = 0
@@ -116,11 +119,25 @@ def train():
                     np.put(test_y_ndarray, ind, test_y)
                     ind = ind + 1
 
+                if times == 0:
+                    figure_name = "第0次"
+                else:
+                    figure_name = "第" + str(times) + "万次"
+
+                # 先设置图名，再设置标题，否则会生成两张图
+                plt.figure(num=figure_name)
+
                 # 先绘制标准的y = sin(x)曲线
                 draw_correct_line()
                 # 再绘制目前拟合的曲线，以虚线表示
-                pylab.plot(test_x_ndarray, test_y_ndarray, '--', label="第" + str(times) + "万次")
-                pylab.show()
+                plt.plot(test_x_ndarray, test_y_ndarray, '--', label="Network output")
+
+                plt.title("Comparison")
+                plt.legend()
+                plt.show()
+
+                # pylab.plot(test_x_ndarray, test_y_ndarray, '--', label=str(times) + "0000th times")
+                # pylab.show()
 
 
 if __name__ == "__main__":
